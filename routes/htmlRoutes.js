@@ -3,7 +3,7 @@ const path = require('path');
 const router = require('express').Router();
 
 // serves static HTML file on app startup
-router.get('*', (req, res) => {
+router.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 

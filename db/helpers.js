@@ -1,44 +1,43 @@
 const fs = require('fs');
+const util = require('util');
 const ShortUniqueId = require('short-unique-id');
 
-const readFile = fs.readFileSync;
-const writeFile = fs.writeFileSync;
-
+const readFile = util.promisify(fs.readFile);
+const writeFile = util.promisify(fs.writeFile);
 const uid = new ShortUniqueId({ length: 10});
-const uuid = uid.rnd();
 
 class Helpers {
   read() {
-    return readFile('./db.json', 'utf8');
+    return readFile('db/db.json', 'utf8');
   };
   
   write(note) {
-    return writeFile('./db.json', JSON.stringify(note), 'utf8');
+    return writeFile('db/db.json', JSON.stringify(note));
   };
-
 
   getNotes() {
     return this.read().then((notes) => {
-
       let returnedNotes
       
       try {
-        returnedNotes = [].push(JSON.parse(notes));
+        returnedNotes = [].concat(JSON.parse(notes));
       } catch(err) {
         console.log(`No notes found in database. ${err}`);
         returnedNotes = [];
       }
+
+      return returnedNotes;
     })
   };
 
-  addNote(note) {
+  addNote(userInput) {
     const { title, text } = userInput;
 
-    if (!title ||!text) {
+    if (!title || !text) {
       throw new Error('Title and text are required');
     }
 
-    const Note = { title, text, id: uuid };
+    const Note = { title, text, id: uid.rnd() };
 
     return this.getNotes().then((notes) => {
       notes.push(Note);
@@ -46,13 +45,15 @@ class Helpers {
     });
   };
 
-  removeNote(id) {
+  deleteNote(id) {
 
-    return this.getNotes().then((notes) => {
-      const filteredNotes = notes.filter((note) => note.id!== id);
-      return this.write(filteredNotes);
-    });
-  }
+    return this.getNotes()
+      .then((notes) => 
+        notes.filter((note) => note.id !== id))
+          .then((filteredNotes) => 
+            this.write(filteredNotes));
+    };
 }
+
 
 module.exports = new Helpers();

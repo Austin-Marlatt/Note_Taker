@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const Helpers = require('./helpers');
+const Helpers = require('../db/helpers');
 
 router.get('/notes', (req, res) => {
   Helpers.getNotes()
@@ -22,10 +22,11 @@ router.post('/notes', (req, res) => {
 });
 
 router.delete('/notes/:id', (req, res) => {
-  Helpers.removeNote(req.params.id)
-    .then(res.status(200).json({ message: 'Note deleted' }))
+  Helpers.deleteNote(req.params.id)
+    .then(() => {
+      res.json({ ok: true })})
     .catch((err) => {
-      res.status(500).json(err);
+      res.status(500).json(err)
     });
 });
 
