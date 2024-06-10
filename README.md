@@ -31,6 +31,10 @@ npm i
 
 Navigate to the webpage, enter a note, click save. Select a note and press the delete button to remove it.
 
+![image](https://github.com/Austin-Marlatt/Note_Taker/blob/main/assets/images/appDemo1.png)
+
+![image](https://github.com/Austin-Marlatt/Note_Taker/blob/main/assets/images/image.png)
+
 ## Contributing
 
 N/A
